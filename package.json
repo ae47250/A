@@ -1,0 +1,21 @@
+{
+  "name": "alpha-pdf-demo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Minimal Next.js App Router demo for HTML-to-PDF conversion using puppeteer-core and @sparticuz/chromium.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@sparticuz/chromium": "latest",
+    "next": "latest",
+    "puppeteer-core": "latest",
+    "react": "latest",
+    "react-dom": "latest"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
