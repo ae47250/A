@@ -9,7 +9,7 @@ const drumImages = [
 ];
 
 export default function HomePage() {
-  const [text, setText] = useState('Tune-up service for rehearsal room drums.\nReplace snare head and inspect cymbal stands.');
+  const [text, setText] = useState('');
   const [status, setStatus] = useState('Ready to create PDF.');
   const [isCreating, setIsCreating] = useState(false);
 
