@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const drumImages = [
   { src: '/drum-set-1.svg', alt: 'Green studio drum set' },
@@ -12,6 +12,17 @@ export default function HomePage() {
   const [text, setText] = useState('');
   const [status, setStatus] = useState('Ready to create PDF.');
   const [isCreating, setIsCreating] = useState(false);
+  const [isNarrow, setIsNarrow] = useState(false);
+
+  useEffect(() => {
+    function updateLayout() {
+      setIsNarrow(window.innerWidth < 760);
+    }
+
+    updateLayout();
+    window.addEventListener('resize', updateLayout);
+    return () => window.removeEventListener('resize', updateLayout);
+  }, []);
 
   async function createPdf() {
     setIsCreating(true);
@@ -65,20 +76,20 @@ export default function HomePage() {
   }
 
   return (
-    <main style={styles.page}>
-      <section style={styles.shell}>
-        <header style={styles.banner}>
+    <main style={{ ...styles.page, ...(isNarrow ? styles.pageNarrow : null) }}>
+      <section style={{ ...styles.shell, ...(isNarrow ? styles.shellNarrow : null) }}>
+        <header style={{ ...styles.banner, ...(isNarrow ? styles.bannerNarrow : null) }}>
           <div>
             <p style={styles.eyebrow}>PDF Demo</p>
-            <h1 style={styles.brand}>MR. LOMBARDI</h1>
+            <h1 style={{ ...styles.brand, ...(isNarrow ? styles.brandNarrow : null) }}>MR. LOMBARDI</h1>
           </div>
-          <img src="/drum-set-1.svg" alt="Full drum set" style={styles.bannerImage} />
+          {!isNarrow && <img src="/drum-set-1.svg" alt="Full drum set" style={styles.bannerImage} />}
         </header>
 
-        <section style={styles.contentGrid}>
+        <section style={{ ...styles.contentGrid, ...(isNarrow ? styles.contentGridNarrow : null) }}>
           <section style={styles.formPanel}>
-            <h2 style={styles.heading}>Hér er texti sem ég þarf að breyta í PDF-snið.</h2>
-            <p style={styles.description}>Skrifaðu texta hér að neðan.</p>
+            <h2 style={{ ...styles.heading, ...(isNarrow ? styles.headingNarrow : null) }}>Hér er texti sem ég þarf að breyta í PDF-snið.</h2>
+            <p style={{ ...styles.description, ...(isNarrow ? styles.descriptionNarrow : null) }}>Skrifaðu texta hér að neðan.</p>
 
             <label htmlFor="estimate-text" style={styles.label}>
               Texti
@@ -88,10 +99,10 @@ export default function HomePage() {
               value={text}
               onChange={(event) => setText(event.target.value)}
               rows={9}
-              style={styles.textarea}
+              style={{ ...styles.textarea, ...(isNarrow ? styles.textareaNarrow : null) }}
             />
 
-            <button type="button" onClick={createPdf} disabled={isCreating} style={styles.button}>
+            <button type="button" onClick={createPdf} disabled={isCreating} style={{ ...styles.button, ...(isNarrow ? styles.buttonNarrow : null) }}>
               {isCreating ? 'Creating PDF...' : 'Create PDF'}
             </button>
 
@@ -100,10 +111,10 @@ export default function HomePage() {
             </p>
           </section>
 
-          <aside style={styles.gallery} aria-label="Drum set gallery">
+          <aside style={{ ...styles.gallery, ...(isNarrow ? styles.galleryNarrow : null) }} aria-label="Drum set gallery">
             {drumImages.map((image) => (
-              <figure key={image.src} style={styles.figure}>
-                <img src={image.src} alt={image.alt} style={styles.galleryImage} />
+              <figure key={image.src} style={{ ...styles.figure, ...(isNarrow ? styles.figureNarrow : null) }}>
+                <img src={image.src} alt={image.alt} style={{ ...styles.galleryImage, ...(isNarrow ? styles.galleryImageNarrow : null) }} />
               </figure>
             ))}
           </aside>
@@ -123,6 +134,9 @@ const styles = {
     fontFamily:
       'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif'
   },
+  pageNarrow: {
+    padding: '14px 10px'
+  },
   shell: {
     width: '100%',
     maxWidth: 1120,
@@ -131,6 +145,9 @@ const styles = {
     background: '#ffffff',
     overflow: 'hidden',
     boxShadow: '0 22px 70px rgba(0, 0, 0, 0.12)'
+  },
+  shellNarrow: {
+    borderRadius: 14
   },
   banner: {
     minHeight: 170,
@@ -141,6 +158,11 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'space-between',
     gap: 24
+  },
+  bannerNarrow: {
+    minHeight: 116,
+    padding: '22px 20px',
+    justifyContent: 'flex-start'
   },
   eyebrow: {
     margin: '0 0 6px',
@@ -155,6 +177,10 @@ const styles = {
     fontSize: 58,
     lineHeight: 1,
     letterSpacing: '0.03em'
+  },
+  brandNarrow: {
+    fontSize: 38,
+    lineHeight: 1.05
   },
   bannerImage: {
     width: 270,
@@ -171,6 +197,11 @@ const styles = {
     gap: 30,
     padding: 38
   },
+  contentGridNarrow: {
+    gridTemplateColumns: '1fr',
+    gap: 22,
+    padding: 20
+  },
   formPanel: {
     minWidth: 0
   },
@@ -179,11 +210,19 @@ const styles = {
     fontSize: 36,
     lineHeight: 1.12
   },
+  headingNarrow: {
+    fontSize: 27,
+    lineHeight: 1.16
+  },
   description: {
     margin: '0 0 28px',
     fontSize: 20,
     lineHeight: 1.45,
     color: '#46514a'
+  },
+  descriptionNarrow: {
+    marginBottom: 22,
+    fontSize: 18
   },
   label: {
     display: 'block',
@@ -203,6 +242,11 @@ const styles = {
     minHeight: 245,
     color: '#17201a'
   },
+  textareaNarrow: {
+    minHeight: 205,
+    padding: 14,
+    fontSize: 17
+  },
   button: {
     display: 'inline-flex',
     alignItems: 'center',
@@ -220,6 +264,13 @@ const styles = {
     cursor: 'pointer',
     boxShadow: '0 12px 24px rgba(47, 111, 62, 0.25)'
   },
+  buttonNarrow: {
+    width: '100%',
+    minWidth: 0,
+    minHeight: 70,
+    padding: '18px 22px',
+    fontSize: 23
+  },
   status: {
     margin: '22px 0 0',
     fontSize: 17,
@@ -230,6 +281,10 @@ const styles = {
     gap: 18,
     alignContent: 'start'
   },
+  galleryNarrow: {
+    gridTemplateColumns: 'repeat(3, 1fr)',
+    gap: 10
+  },
   figure: {
     margin: 0,
     padding: 12,
@@ -237,10 +292,17 @@ const styles = {
     borderRadius: 22,
     background: '#f7faf8'
   },
+  figureNarrow: {
+    padding: 8,
+    borderRadius: 14
+  },
   galleryImage: {
     display: 'block',
     width: '100%',
     height: 150,
     objectFit: 'contain'
+  },
+  galleryImageNarrow: {
+    height: 82
   }
 };
