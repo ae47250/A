@@ -1,5 +1,12 @@
 import chromium from '@sparticuz/chromium';
+import { existsSync } from 'node:fs';
 import puppeteer from 'puppeteer-core';
+
+const localBrowserPaths = [
+  'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+  'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
+  'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
+];
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -22,11 +29,12 @@ export async function POST(request) {
 
     const origin = new URL(request.url).origin;
     const html = buildEstimateHtml(inputText, origin);
+    const localBrowserPath = localBrowserPaths.find((browserPath) => existsSync(browserPath));
 
     browser = await puppeteer.launch({
-      args: chromium.args,
+      args: localBrowserPath ? ['--no-sandbox', '--disable-setuid-sandbox'] : chromium.args,
       defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath(),
+      executablePath: localBrowserPath || await chromium.executablePath(),
       headless: chromium.headless
     });
 
